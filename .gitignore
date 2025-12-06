@@ -1,3 +1,6 @@
-/.vscode
-/venv
-*.pyc
+.vscode/
+.venv/
+venv/
+.env
+output/
+
