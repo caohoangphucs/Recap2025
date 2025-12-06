@@ -27,6 +27,7 @@ def get_img_list(input_folder_path) -> list[ImageDetail]:
         time = datetime.fromtimestamp(os.path.getctime(path))
         new_img = ImageDetail(id, filename, img.size, time, img.format, path)
         res.append(new_img)
+    res.sort(key=lambda x: x.date)
     return res
 
 def segment(src: list[ImageDetail], nums_pic) -> dict:
@@ -56,5 +57,22 @@ def render(backgr, segment: dict, size: int, offset: int):
             x+=size
     return backgr
 
+def merge(row_size: int, col_size: int , width: int, img_path: str, out_path:str):
+    w = width
+    img_num_in_row = row_size
+    img_num_in_col = col_size
+    per_page_img = img_num_in_row * img_num_in_col
+    size = w//img_num_in_row
+    h = size * img_num_in_col
 
-        
+    images = get_img_list(img_path)
+    seg = segment(images, img_num_in_row)
+
+    for index in range(len(images) // per_page_img):
+        offset = index * img_num_in_col
+        backgr = Image.new("RGBA", (w, h), (255,255,255,255))
+        canvas = render(backgr, seg, size, offset)
+        canvas.save(f"{out_path}/img{index}.png")
+        print(f"Merged {index * per_page_img}/{len(images)} images, save to img{index}.png")
+
+merge(5, 3, 1920, "/mnt/c/Users/Phucdeptrai/Pictures/Screenshots", "/home/phucdeptrai/Project/Recap/output")
