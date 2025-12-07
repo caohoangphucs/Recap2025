@@ -3,4 +3,6 @@
 venv/
 .env
 output/
-
+build/
+__pycache__/
+*.mp4
